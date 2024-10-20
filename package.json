@@ -16,11 +16,10 @@
   },
   "keywords": [
     "expressjs",
-    "studium",
     "nodejs",
     "api"
   ],
-  "author": "HackTigers",
+  "author": "heywinit",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/heywinit/express-api-template/issues"
