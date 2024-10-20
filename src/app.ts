@@ -44,7 +44,7 @@ async function initializeApp() {
     console.log(`Please fix the environment variables and try again`);
     process.exit(1);
   }
-  console.info("Kaksh API is starting...");
+  console.info("Template API is starting...");
   await initializeDatabase();
   await registerRouters(app);
 
