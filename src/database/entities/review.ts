@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -28,6 +29,33 @@ export class Review {
 
   @Column({ default: true })
   isVisible: boolean;
+
+  @Column({ default: false })
+  isVerifiedPurchase: boolean;
+
+  @Column({ default: 0 })
+  helpfulVotes: number;
+
+  @Column({ default: 0 })
+  unhelpfulVotes: number;
+
+  @Column({ type: "text", nullable: true })
+  adminReply: string;
+
+  @Column({ type: "text", nullable: true })
+  sellerReply: string;
+
+  @Column({ nullable: true })
+  replyDate: Date;
+
+  @Column({ type: "simple-array", nullable: true })
+  images: string[];
+
+  @Column({ default: "pending" })
+  status: "pending" | "approved" | "rejected";
+
+  @Column({ type: "text", nullable: true })
+  moderationNotes: string;
 
   @CreateDateColumn()
   createdAt: Date;

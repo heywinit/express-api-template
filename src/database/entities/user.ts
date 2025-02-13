@@ -9,6 +9,7 @@ import {
 import { Order } from "./order";
 import { Review } from "./review";
 import { Cart } from "./cart";
+import { Wishlist } from "./wishlist";
 
 @Entity()
 export class User {
@@ -56,6 +57,9 @@ export class User {
 
   @OneToMany(() => Cart, (cart) => cart.user)
   cartItems: Cart[];
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.user)
+  wishlistItems: Wishlist[];
 
   @CreateDateColumn()
   createdAt: Date;

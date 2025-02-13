@@ -9,6 +9,8 @@ import {
   Payment,
   Review,
   Cart,
+  Discount,
+  Wishlist,
 } from "./entities";
 import Constants from "../utils/constants";
 
@@ -20,6 +22,8 @@ let orderItemRepo: Repository<OrderItem>;
 let paymentRepo: Repository<Payment>;
 let reviewRepo: Repository<Review>;
 let cartRepo: Repository<Cart>;
+let discountRepo: Repository<Discount>;
+let wishlistRepo: Repository<Wishlist>;
 
 export async function initializeDatabase() {
   const dataSource = new DataSource({
@@ -41,6 +45,8 @@ export async function initializeDatabase() {
       Payment,
       Review,
       Cart,
+      Discount,
+      Wishlist,
     ],
     synchronize: true, // Set to true when you want to sync DB fields and tables with codebase
   });
@@ -59,6 +65,8 @@ export async function initializeDatabase() {
   paymentRepo = dataSource.getRepository(Payment);
   reviewRepo = dataSource.getRepository(Review);
   cartRepo = dataSource.getRepository(Cart);
+  discountRepo = dataSource.getRepository(Discount);
+  wishlistRepo = dataSource.getRepository(Wishlist);
 }
 
 export {
@@ -70,4 +78,6 @@ export {
   paymentRepo,
   reviewRepo,
   cartRepo,
+  discountRepo,
+  wishlistRepo,
 };
