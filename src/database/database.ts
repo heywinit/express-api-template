@@ -1,9 +1,25 @@
 import "reflect-metadata";
 import { DataSource, Repository } from "typeorm";
-import { User } from "./entities";
+import {
+  User,
+  Product,
+  Category,
+  Order,
+  OrderItem,
+  Payment,
+  Review,
+  Cart,
+} from "./entities";
 import Constants from "../utils/constants";
 
 let userRepo: Repository<User>;
+let productRepo: Repository<Product>;
+let categoryRepo: Repository<Category>;
+let orderRepo: Repository<Order>;
+let orderItemRepo: Repository<OrderItem>;
+let paymentRepo: Repository<Payment>;
+let reviewRepo: Repository<Review>;
+let cartRepo: Repository<Cart>;
 
 export async function initializeDatabase() {
   const dataSource = new DataSource({
@@ -16,7 +32,16 @@ export async function initializeDatabase() {
     port: 6543,
     driver: require("pg"),
     ssl: false,
-    entities: [User],
+    entities: [
+      User,
+      Product,
+      Category,
+      Order,
+      OrderItem,
+      Payment,
+      Review,
+      Cart,
+    ],
     synchronize: true, // Set to true when you want to sync DB fields and tables with codebase
   });
   await dataSource
@@ -27,6 +52,22 @@ export async function initializeDatabase() {
     );
 
   userRepo = dataSource.getRepository(User);
+  productRepo = dataSource.getRepository(Product);
+  categoryRepo = dataSource.getRepository(Category);
+  orderRepo = dataSource.getRepository(Order);
+  orderItemRepo = dataSource.getRepository(OrderItem);
+  paymentRepo = dataSource.getRepository(Payment);
+  reviewRepo = dataSource.getRepository(Review);
+  cartRepo = dataSource.getRepository(Cart);
 }
 
-export { userRepo };
+export {
+  userRepo,
+  productRepo,
+  categoryRepo,
+  orderRepo,
+  orderItemRepo,
+  paymentRepo,
+  reviewRepo,
+  cartRepo,
+};

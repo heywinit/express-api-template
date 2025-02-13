@@ -1,4 +1,3 @@
-import e from "express";
 import Constants from "./constants";
 import dotenv from "dotenv";
 

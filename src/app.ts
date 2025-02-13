@@ -44,13 +44,13 @@ async function initializeApp() {
     console.log(`Please fix the environment variables and try again`);
     process.exit(1);
   }
-  console.info("Template API is starting...");
+  console.info("Swankiz API is starting...");
   await initializeDatabase();
   await registerRouters(app);
 
   app.get("/", (_: Request, res: Response) => {
     res.json({
-      message: "Template API is running",
+      message: "Swankiz API is running",
       success: true,
     });
   });

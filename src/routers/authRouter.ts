@@ -1,60 +1,94 @@
-import express, { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-
-import constants from "../utils/constants";
-import { userRepo } from "../database/database";
+import express from "express";
+import { AuthService } from "../services/authService";
+import { adminAuthMiddleware } from "../middleware/auth";
 
 const router = express.Router();
-router.post("/login", async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
 
-    // Check if identifier (username or email) and password are provided
-    if (!email || !password) {
+// Initiate registration by sending OTP
+router.post("/register", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
       return res.status(400).json({
-        message: "Email and password are required",
+        message: "Email is required",
         success: false,
       });
     }
 
-    // Determine if the identifier is an email or a username
-    let user = await userRepo.findOne({ where: { email: email } });
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User does not exist", success: false });
-    }
-
-    // Validate password
-    const isValid = await user.validatePassword(password);
-    if (!isValid) {
-      return res
-        .status(401)
-        .json({ message: "Invalid credentials", success: false });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      constants.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
-
-    // Return user details and token
-    return res.json({
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-      },
-      success: true,
+    const result = await AuthService.initiateRegistration(email);
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("Registration error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
     });
-  } catch (e) {
-    console.error("Login error:", e);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", success: false });
+  }
+});
+
+// Verify OTP and complete registration/login
+router.post("/verify-otp", async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({
+        message: "Email and OTP are required",
+        success: false,
+      });
+    }
+
+    const result = await AuthService.verifyOTP(email, otp);
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("OTP verification error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+});
+
+// Initiate login by sending OTP
+router.post("/login", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+        success: false,
+      });
+    }
+
+    const result = await AuthService.login(email);
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+});
+
+// Create admin user (protected by admin middleware)
+router.post("/create-admin", adminAuthMiddleware, async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+        success: false,
+      });
+    }
+
+    const result = await AuthService.createAdmin(email);
+    return res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("Admin creation error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 });
 

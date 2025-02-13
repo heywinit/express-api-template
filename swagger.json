@@ -2,8 +2,8 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "express-api-template",
-    "description": "Template for a backend using Express and PostgreSQL with TypeORM"
+    "title": "swankiz-api",
+    "description": "API for an e-commerce website for Swankiz, a gen-z streetwear fashion brand"
   },
   "paths": {
     "/": {

@@ -2,12 +2,15 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import bcrypt from "bcrypt";
+import { Order } from "./order";
+import { Review } from "./review";
+import { Cart } from "./cart";
 
-@Entity("users")
+@Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -15,23 +18,48 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ unique: true })
-  username: string;
+  @Column({ nullable: true })
+  firstName: string;
 
-  @Column()
-  password: string;
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ default: "user" })
+  role: "user" | "admin";
+
+  @Column({ nullable: true })
+  address: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
+  otpSecret: string;
+
+  @Column({ nullable: true })
+  otpExpiry: Date;
+
+  @Column({ default: false })
+  isVerified: boolean;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ nullable: true })
+  lastLoginAt: Date;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  cartItems: Cart[];
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  async setPassword(password: string) {
-    this.password = await bcrypt.hash(password, 10);
-  }
-
-  async validatePassword(password: string) {
-    return bcrypt.compare(password, this.password);
-  }
 }

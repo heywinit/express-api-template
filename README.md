@@ -1,3 +1,3 @@
-# express-api-template
+# swankiz-api
 
-Template for a backend using Express and PostgreSQL with TypeORM
+API for an e-commerce website for Swankiz, a gen-z streetwear fashion brand

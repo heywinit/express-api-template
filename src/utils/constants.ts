@@ -13,6 +13,4 @@ export default {
   ERROR_WEBHOOK: process.env.ERROR_WEBHOOK,
 
   PORT: process.env.PORT || 3000,
-
-  PRIVATE_KEY: process.env.PRIVATE_KEY,
 };
