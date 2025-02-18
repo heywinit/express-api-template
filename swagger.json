@@ -18,145 +18,543 @@
     }
   },
   "paths": {
-    "/auth/register": {
+    "/auth": {
       "post": {
-        "summary": "Register a new user",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string"
+        "summary": "Authentication related endpoints",
+        "description": "Endpoints for user registration, login, and admin creation.",
+        "tags": ["Auth"],
+        "paths": {
+          "/register": {
+            "post": {
+              "summary": "Register a new user",
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OTP sent successfully"
                 }
               }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OTP sent successfully"
-          }
-        }
-      }
-    },
-    "/auth/verify-otp": {
-      "post": {
-        "summary": "Verify OTP and complete registration/login",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string"
+          },
+          "/verify-otp": {
+            "post": {
+              "summary": "Verify OTP and complete registration/login",
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      },
+                      "otp": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OTP verified successfully"
+                }
+              }
+            }
+          },
+          "/login": {
+            "post": {
+              "summary": "Initiate login by sending OTP",
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OTP sent successfully"
                 },
-                "otp": {
-                  "type": "string"
+                "400": {
+                  "description": "Email is required"
+                },
+                "500": {
+                  "description": "Internal server error"
                 }
               }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OTP verified successfully"
+          },
+          "/create-admin": {
+            "post": {
+              "summary": "Create admin user",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Admin created successfully"
+                },
+                "400": {
+                  "description": "Email is required"
+                },
+                "500": {
+                  "description": "Internal server error"
+                }
+              }
+            }
           }
         }
       }
     },
     "/products": {
       "get": {
-        "summary": "Get all products",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "type": "integer"
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "type": "integer"
-          },
-          {
-            "in": "query",
-            "name": "categoryId",
-            "type": "string"
-          },
-          {
-            "in": "query",
-            "name": "search",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of products"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create a new product",
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
+        "summary": "Product related endpoints",
+        "description": "Endpoints for managing products.",
+        "tags": ["Products"],
+        "paths": {
+          "/": {
+            "get": {
+              "summary": "Get all products",
+              "parameters": [
+                {
+                  "in": "query",
+                  "name": "page",
+                  "type": "integer"
+                },
+                {
+                  "in": "query",
+                  "name": "limit",
+                  "type": "integer"
+                },
+                {
+                  "in": "query",
+                  "name": "categoryId",
                   "type": "string"
                 },
-                "description": {
+                {
+                  "in": "query",
+                  "name": "search",
                   "type": "string"
                 },
-                "price": {
+                {
+                  "in": "query",
+                  "name": "minPrice",
                   "type": "number"
                 },
-                "categoryId": {
-                  "type": "string"
+                {
+                  "in": "query",
+                  "name": "maxPrice",
+                  "type": "number"
+                },
+                {
+                  "in": "query",
+                  "name": "inStock",
+                  "type": "boolean"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "List of products"
+                },
+                "500": {
+                  "description": "Failed to fetch products"
+                }
+              }
+            },
+            "post": {
+              "summary": "Create a new product",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "number"
+                      },
+                      "sku": {
+                        "type": "string"
+                      },
+                      "stockQuantity": {
+                        "type": "integer"
+                      },
+                      "categoryId": {
+                        "type": "string"
+                      },
+                      "images": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Product created successfully"
+                },
+                "400": {
+                  "description": "Missing required fields"
+                },
+                "500": {
+                  "description": "Failed to create product"
                 }
               }
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Product created successfully"
+          },
+          "/{id}": {
+            "get": {
+              "summary": "Get product details",
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Product details"
+                },
+                "404": {
+                  "description": "Product not found"
+                }
+              }
+            },
+            "put": {
+              "summary": "Update product",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "number"
+                      },
+                      "sku": {
+                        "type": "string"
+                      },
+                      "stockQuantity": {
+                        "type": "integer"
+                      },
+                      "categoryId": {
+                        "type": "string"
+                      },
+                      "images": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "isActive": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Product updated successfully"
+                },
+                "500": {
+                  "description": "Failed to update product"
+                }
+              }
+            },
+            "delete": {
+              "summary": "Delete product",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Product deleted successfully"
+                },
+                "500": {
+                  "description": "Failed to delete product"
+                }
+              }
+            }
+          },
+          "/analytics/summary": {
+            "get": {
+              "summary": "Get product analytics",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Product analytics summary"
+                },
+                "500": {
+                  "description": "Failed to fetch analytics"
+                }
+              }
+            }
           }
         }
       }
     },
     "/cart": {
       "get": {
-        "summary": "Get user's cart",
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Cart details"
+        "summary": "Cart related endpoints",
+        "description": "Endpoints for managing the shopping cart.",
+        "tags": ["Cart"],
+        "paths": {
+          "/": {
+            "get": {
+              "summary": "Get user's cart",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Cart details"
+                }
+              }
+            }
+          },
+          "/add": {
+            "post": {
+              "summary": "Add item to cart",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "productId": {
+                        "type": "string"
+                      },
+                      "quantity": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Item added to cart"
+                },
+                "400": {
+                  "description": "Product ID and quantity (minimum 1) are required"
+                },
+                "500": {
+                  "description": "Failed to add item to cart"
+                }
+              }
+            }
+          },
+          "/update/{cartItemId}": {
+            "put": {
+              "summary": "Update cart item quantity",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "cartItemId",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "quantity": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Cart item updated"
+                },
+                "400": {
+                  "description": "Valid quantity is required"
+                },
+                "500": {
+                  "description": "Failed to update cart"
+                }
+              }
+            }
+          },
+          "/remove/{cartItemId}": {
+            "delete": {
+              "summary": "Remove item from cart",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "cartItemId",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Item removed from cart"
+                },
+                "500": {
+                  "description": "Failed to remove item from cart"
+                }
+              }
+            }
+          },
+          "/clear": {
+            "delete": {
+              "summary": "Clear cart",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Cart cleared"
+                },
+                "500": {
+                  "description": "Failed to clear cart"
+                }
+              }
+            }
+          },
+          "/validate": {
+            "get": {
+              "summary": "Validate cart items",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Cart items validated"
+                },
+                "500": {
+                  "description": "Failed to validate cart"
+                }
+              }
+            }
           }
         }
       }
     },
     "/orders": {
       "post": {
+        "tags": ["Orders"],
         "summary": "Create a new order",
         "security": [
           {
@@ -185,12 +583,145 @@
         "responses": {
           "201": {
             "description": "Order created successfully"
+          },
+          "400": {
+            "description": "Shipping address and payment method are required"
+          },
+          "500": {
+            "description": "Failed to create order"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get user's orders",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of user's orders"
+          },
+          "500": {
+            "description": "Failed to fetch orders"
+          }
+        }
+      }
+    },
+    "/orders/{orderId}": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get specific order",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "orderId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order details"
+          },
+          "404": {
+            "description": "Order not found"
+          }
+        }
+      },
+      "/orders/{orderId}/status": {
+        "put": {
+          "tags": ["Orders"],
+
+          "summary": "Update order status",
+          "security": [
+            {
+              "Bearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "orderId",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Order status updated"
+            },
+            "400": {
+              "description": "Status is required"
+            },
+            "500": {
+              "description": "Failed to update order status"
+            }
+          }
+        }
+      },
+      "/orders/analytics/summary": {
+        "get": {
+          "tags": ["Orders"],
+
+          "summary": "Get order analytics",
+          "security": [
+            {
+              "Bearer": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Order analytics summary"
+            },
+            "500": {
+              "description": "Failed to fetch order analytics"
+            }
           }
         }
       }
     },
     "/reviews/product/{productId}": {
       "get": {
+        "tags": ["Orders"],
+
         "summary": "Get product reviews",
         "parameters": [
           {
@@ -208,18 +739,37 @@
             "in": "query",
             "name": "limit",
             "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "rating",
+            "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "verifiedOnly",
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "type": "string",
+            "enum": ["helpful", "recent", "rating"]
           }
         ],
         "responses": {
           "200": {
             "description": "List of reviews"
+          },
+          "500": {
+            "description": "Failed to fetch reviews"
           }
         }
-      }
-    },
-    "/discounts/validate": {
+      },
       "post": {
-        "summary": "Validate discount code",
+        "tags": ["Orders"],
+
+        "summary": "Create review",
         "security": [
           {
             "Bearer": []
@@ -227,30 +777,104 @@
         ],
         "parameters": [
           {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "type": "string"
+          },
+          {
             "in": "body",
             "name": "body",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "code": {
+                "rating": {
+                  "type": "integer"
+                },
+                "comment": {
                   "type": "string"
                 },
-                "cartTotal": {
-                  "type": "number"
-                },
-                "cartItems": {
+                "images": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "productId": {
-                        "type": "string"
-                      },
-                      "quantity": {
-                        "type": "integer"
-                      }
-                    }
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Rating and comment are required"
+          },
+          "500": {
+            "description": "Failed to create review"
+          }
+        }
+      }
+    },
+    "/reviews/product/{productId}/analytics": {
+      "get": {
+        "tags": ["Orders"],
+
+        "summary": "Get review analytics",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review analytics"
+          },
+          "500": {
+            "description": "Failed to fetch review analytics"
+          }
+        }
+      }
+    },
+    "/reviews/{reviewId}": {
+      "put": {
+        "tags": ["Orders"],
+
+        "summary": "Update review",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reviewId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "type": "integer"
+                },
+                "comment": {
+                  "type": "string"
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               }
@@ -259,7 +883,369 @@
         ],
         "responses": {
           "200": {
-            "description": "Discount validation result"
+            "description": "Review updated successfully"
+          },
+          "500": {
+            "description": "Failed to update review"
+          }
+        }
+      }
+    },
+    "/reviews/{reviewId}/vote": {
+      "post": {
+        "tags": ["Orders"],
+
+        "summary": "Vote on review",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reviewId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isHelpful": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review vote recorded"
+          },
+          "400": {
+            "description": "Vote type is required"
+          },
+          "500": {
+            "description": "Failed to vote on review"
+          }
+        }
+      }
+    },
+    "/reviews/{reviewId}/moderate": {
+      "put": {
+        "tags": ["Orders"],
+
+        "summary": "Moderate review",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reviewId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "moderationNotes": {
+                  "type": "string"
+                },
+                "adminReply": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review moderated successfully"
+          },
+          "400": {
+            "description": "Status is required"
+          },
+          "500": {
+            "description": "Failed to moderate review"
+          }
+        }
+      }
+    },
+    "/discounts": {
+      "get": {
+        "summary": "Discount related endpoints",
+        "description": "Endpoints for managing discounts.",
+        "tags": ["Discount"],
+        "paths": {
+          "/validate": {
+            "post": {
+              "summary": "Validate discount code",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "cartTotal": {
+                        "type": "number"
+                      },
+                      "cartItems": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "productId": {
+                              "type": "string"
+                            },
+                            "quantity": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Discount validation result"
+                }
+              }
+            }
+          },
+          "/active": {
+            "get": {
+              "summary": "Get active discounts",
+              "parameters": [
+                {
+                  "in": "query",
+                  "name": "page",
+                  "type": "integer"
+                },
+                {
+                  "in": "query",
+                  "name": "limit",
+                  "type": "integer"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "List of active discounts"
+                },
+                "500": {
+                  "description": "Failed to fetch active discounts"
+                }
+              }
+            }
+          },
+          "/": {
+            "post": {
+              "summary": "Create discount",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "scope": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "number"
+                      },
+                      "startDate": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "minPurchaseAmount": {
+                        "type": "number"
+                      },
+                      "maxDiscountAmount": {
+                        "type": "number"
+                      },
+                      "usageLimit": {
+                        "type": "integer"
+                      },
+                      "applicableProductIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "applicableCategoryIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "applicableUserIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "conditions": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Discount created successfully"
+                },
+                "400": {
+                  "description": "Missing required fields"
+                },
+                "500": {
+                  "description": "Failed to create discount"
+                }
+              }
+            }
+          },
+          "/{id}": {
+            "put": {
+              "summary": "Update discount",
+              "security": [
+                {
+                  "Bearer": []
+                }
+              ],
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "in": "body",
+                  "name": "body",
+                  "required": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "scope": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "number"
+                      },
+                      "startDate": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "minPurchaseAmount": {
+                        "type": "number"
+                      },
+                      "maxDiscountAmount": {
+                        "type": "number"
+                      },
+                      "usageLimit": {
+                        "type": "integer"
+                      },
+                      "isActive": {
+                        "type": "boolean"
+                      },
+                      "applicableProductIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "applicableCategoryIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "applicableUserIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "conditions": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Discount updated successfully"
+                },
+                "500": {
+                  "description": "Failed to update discount"
+                }
+              }
+            }
           }
         }
       }

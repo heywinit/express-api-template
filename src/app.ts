@@ -11,7 +11,6 @@ import { validateEnv } from "./utils/validation";
 
 import constants from "./utils/constants";
 import swaggerDocument from "../swagger.json";
-import { validationMiddleware } from "./middleware/validation";
 import { loggingMiddleware } from "./middleware/log";
 const app = express();
 const port = constants.PORT;
@@ -37,7 +36,6 @@ async function initializeApp() {
     })
   );
   bindLogger();
-  app.use(validationMiddleware);
   app.use(loggingMiddleware);
   app.use(cors());
   if (!validateEnv()) {

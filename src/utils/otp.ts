@@ -7,8 +7,9 @@ export function generateOTP(): string {
 }
 
 const transporter = nodemailer.createTransport({
+  service: "SMTP",
   host: constants.SMTP_HOST,
-  port: constants.SMTP_PORT,
+  port: parseInt(constants.SMTP_PORT),
   secure: true,
   auth: {
     user: constants.SMTP_USER,
@@ -21,7 +22,7 @@ export async function sendOTPByEmail(
   otp: string
 ): Promise<void> {
   const mailOptions = {
-    from: constants.SMTP_FROM,
+    from: constants.SMPT_FROM,
     to: email,
     subject: "Your OTP for Swankiz",
     html: `

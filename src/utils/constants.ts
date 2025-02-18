@@ -13,4 +13,10 @@ export default {
   ERROR_WEBHOOK: process.env.ERROR_WEBHOOK,
 
   PORT: process.env.PORT || 3000,
+
+  SMTP_HOST: "",
+  SMTP_PORT: "",
+  SMTP_USER: "",
+  SMTP_PASS: "",
+  SMPT_FROM: "",
 };
