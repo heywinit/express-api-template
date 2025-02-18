@@ -14,9 +14,10 @@ export default {
 
   PORT: process.env.PORT || 3000,
 
-  SMTP_HOST: "",
-  SMTP_PORT: "",
-  SMTP_USER: "",
-  SMTP_PASS: "",
-  SMPT_FROM: "",
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS,
+  MAIL_GUN_API_KEY: process.env.MAIL_GUN_API_KEY || "",
+  MAILGUN_DOMAIN: process.env.MAILGUN_DOMAIN || "swankiz.co.in",
 };
